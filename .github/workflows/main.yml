@@ -1,0 +1,30 @@
+name: Show GitHub IDs
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  show-github-info:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show GitHub organization and repository IDs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ORG_NAME="${{ github.repository_owner }}"
+          REPO="${{ github.repository }}"
+
+          ORG_ID=$(gh api "orgs/$ORG_NAME" --jq '.id')
+          REPO_ID=$(gh api "repos/$REPO" --jq '.id')
+
+          echo "================================"
+          echo "Organization Name : $ORG_NAME"
+          echo "Organization ID   : $ORG_ID"
+          echo "Repository        : $REPO"
+          echo "Repository Name   : ${{ github.event.repository.name }}"
+          echo "Repository ID     : $REPO_ID"
+          echo "================================"
